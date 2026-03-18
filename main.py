@@ -3,6 +3,7 @@
 from dotenv import load_dotenv
 import os
 import requests
+import json
 
 load_dotenv()
 
@@ -31,5 +32,27 @@ if response.status_code == 200:
     print("Курс EUR:", data["rates"]["EUR"])
 else:
     print("Ошибка:", response.status_code)
-    
 
+print("\n--- Работа с Dict/List ---")
+
+date = data["date"]
+base = data["base"]
+rates = data["rates"]
+
+print(f"Дата обновления: {date}")
+print(f"Базовая валюта: {base}")    
+
+currencies = ["USD", "EUR", "CNY", "GBP"]
+
+print("\nКурсы валют:")
+for currency in currencies:
+    rate = rates.get(currency, "не найден")
+    print(f"  {currency}: {rate}")
+
+print("\nВалюты дороже 0.01 к рублю:")
+expensive = [c for c in currencies if rates.get(c, 0) > 0.01]
+print(expensive)
+
+json_string = json.dumps(data, indent=2, ensure_ascii=False)
+print(f"\nПервые 100 символов JSON ответа:")
+print(json_string[:100])
