@@ -1,58 +1,40 @@
-"""AI agent for beauty."""
+"""AI administrator for beauty studio."""
 
+from telegram.ext import Application, MessageHandler, CommandHandler, filters
 from dotenv import load_dotenv
 import os
-import requests
-import json
 
 load_dotenv()
+TOKEN = os.getenv("TELEGRAM_TOKEN")
 
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
-CLAUDE_API_KEY = os.getenv("CLAUDE_API_KEY")
-DIKIDI_API_KEY = os.getenv("DIKIDI_API_KEY")
-
-if not TELEGRAM_TOKEN:
+if not TOKEN:
     raise ValueError("TELEGRAM_TOKEN не найден")
-if not CLAUDE_API_KEY:
-    raise ValueError("CLAUDE_API_KEY не найден")
-if not DIKIDI_API_KEY:
-    raise ValueError("DIKIDI_API_KEY не найден")
 
-print("All keys loaded successfully")
+async def start(update, context):
+    name = update.effective_user.first_name
+    await update.message.reply_text(
+        f"Привет, {name}! Я администратор студии Коради. Чем могу помочь?"
+    )
 
-url = "https://api.exchangerate-api.com/v4/latest/RUB"
+async def handle_message(update, context):
+    text = update.message.text
+    name = update.effective_user.first_name
+    await update.message.reply_text(
+        f"{name}, вы написали: {text}"
+    )
 
-response = requests.get(url)
+def main():
+    app = (
+        Application.builder()
+        .token(TOKEN)
+        .proxy("http://127.0.0.1:12334")
+        .get_updates_proxy("http://127.0.0.1:12334")
+        .build()
+    )
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    print("Бот запущен...")
+    app.run_polling()
 
-if response.status_code == 200:
-    data = response.json()
-    print("Статус:", response.status_code)
-    print("Базовая валюта:", data["base"])
-    print("Курс USD:", data["rates"]["USD"])
-    print("Курс EUR:", data["rates"]["EUR"])
-else:
-    print("Ошибка:", response.status_code)
-
-print("\n--- Работа с Dict/List ---")
-
-date = data["date"]
-base = data["base"]
-rates = data["rates"]
-
-print(f"Дата обновления: {date}")
-print(f"Базовая валюта: {base}")    
-
-currencies = ["USD", "EUR", "CNY", "GBP"]
-
-print("\nКурсы валют:")
-for currency in currencies:
-    rate = rates.get(currency, "не найден")
-    print(f"  {currency}: {rate}")
-
-print("\nВалюты дороже 0.01 к рублю:")
-expensive = [c for c in currencies if rates.get(c, 0) > 0.01]
-print(expensive)
-
-json_string = json.dumps(data, indent=2, ensure_ascii=False)
-print(f"\nПервые 100 символов JSON ответа:")
-print(json_string[:100])
+if __name__ == "__main__":
+    main()
