@@ -81,6 +81,13 @@ SYSTEM_PROMPT = """
 - Если вопрос не про студию — вежливо скажи что можешь помочь только с вопросами о студии
 - Спорные вопросы передавай мастеру: +7 (915) 184-38-68
 - С детьми приходить можно
+
+Формат ответа:
+- Максимум 3 предложения
+- Каждое предложение заканчивается точкой
+- Никаких звёздочек, решёток и markdown
+- Перечисления через запятую в одну строку
+- Только самое важное — без лишних слов
 """
 
 user_histories = {}
@@ -93,8 +100,8 @@ def get_claude_response(user_id: int, user_message: str) -> str:
     history.append({"role": "user", "content": user_message})
 
     response = claude.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=1024,
+        model="claude-haiku-4-5-20251001",
+        max_tokens=256,
         system=SYSTEM_PROMPT,
         messages=history
     )
