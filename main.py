@@ -1,9 +1,11 @@
-"""AI administrator for beauty studio."""
+"""AI administrator for beauty studio Koradi."""
 
 from telegram.ext import Application, MessageHandler, CommandHandler, filters
 from dotenv import load_dotenv
-import os
 import anthropic
+import json
+import re
+import os
 
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
@@ -12,7 +14,6 @@ ANTHROPIC_BASE_URL = os.getenv("ANTHROPIC_BASE_URL")
 
 if not TOKEN:
     raise ValueError("TELEGRAM_TOKEN не найден")
-
 if not CLAUDE_API_KEY:
     raise ValueError("CLAUDE_API_KEY не найден")
 
@@ -77,22 +78,57 @@ SYSTEM_PROMPT = """
 
 Правила:
 - Никогда не придумывай услуги или цены которых нет в прайсе
-- Для записи отправляй ссылку: https://dikidi.net/koradi
-- Если вопрос не про студию — вежливо скажи что можешь помочь только с вопросами о студии
 - Спорные вопросы передавай мастеру: +7 (915) 184-38-68
+- Если вопрос не про студию — вежливо скажи что можешь помочь только с вопросами о студии
 - С детьми приходить можно
 
-Формат ответа:
-- Максимум 3 предложения
-- Каждое предложение заканчивается точкой
-- Никаких звёздочек, решёток и markdown
-- Перечисления через запятую в одну строку
-- Только самое важное — без лишних слов
+Формат ответа — ТОЛЬКО JSON без markdown и пояснений:
+{
+    "intent": "price_question" | "booking" | "faq" | "cancel" | "greeting" | "unknown",
+    "service": "название услуги или null",
+    "reply": "текст ответа клиенту на русском, вежливо, на Вы, без эмодзи, максимум 3 предложения"
+}
 """
 
 user_histories = {}
 
+
+def parse_json_response(text: str) -> dict:
+    """Безопасно парсим JSON из ответа Claude."""
+    text = re.sub(r'```json\s*', '', text)
+    text = re.sub(r'```\s*', '', text)
+    text = text.strip()
+
+    match = re.search(r'\{.*\}', text, re.DOTALL)
+    if match:
+        text = match.group()
+
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        return {
+            "intent": "unknown",
+            "service": None,
+            "reply": "Извините, не смогла обработать запрос. Попробуйте написать иначе."
+        }
+
+
+def handle_intent(data: dict) -> str:
+    """Формируем финальный ответ на основе намерения."""
+    intent = data.get("intent", "unknown")
+    reply = data.get("reply", "")
+
+    if intent == "booking":
+        reply += "\n\nЗаписаться: https://dikidi.net/koradi"
+
+    elif intent == "cancel":
+        reply += "\n\nДля отмены свяжитесь с нами: +7 (915) 184-38-68"
+
+    return reply
+
+
 def get_claude_response(user_id: int, user_message: str) -> str:
+    """Отправить сообщение в Claude и получить ответ."""
     if user_id not in user_histories:
         user_histories[user_id] = []
 
@@ -106,24 +142,27 @@ def get_claude_response(user_id: int, user_message: str) -> str:
         messages=history
     )
 
-    bot_reply = next(
-    block.text for block in response.content
-    if block.type == "text"
+    raw_reply = next(
+        block.text for block in response.content
+        if block.type == "text"
     )
-    history.append({"role": "assistant", "content": bot_reply})
 
-    return bot_reply
+    history.append({"role": "assistant", "content": raw_reply})
+
+    data = parse_json_response(raw_reply)
+    return handle_intent(data)
+
 
 async def start(update, context):
     name = update.effective_user.first_name
-
     await update.message.reply_text(
-        f"Привет, {name}! Я администратор студии Коради. Чем могу помочь?"
+        f"Здравствуйте, {name}! Я администратор студии бровей и ресниц «Коради». Чем могу помочь?"
     )
 
+
 async def handle_message(update, context):
-    user_text = update.message.text
     user_id = update.effective_user.id
+    user_text = update.message.text
 
     await context.bot.send_chat_action(
         chat_id=update.effective_chat.id,
@@ -132,6 +171,7 @@ async def handle_message(update, context):
 
     reply = get_claude_response(user_id, user_text)
     await update.message.reply_text(reply)
+
 
 def main():
     app = (
@@ -146,6 +186,6 @@ def main():
     print("Бот запущен...")
     app.run_polling()
 
+
 if __name__ == "__main__":
     main()
-
