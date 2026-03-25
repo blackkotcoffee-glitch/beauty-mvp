@@ -6,6 +6,7 @@ import anthropic
 import json
 import re
 import os
+import asyncio
 
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
@@ -17,7 +18,7 @@ if not TOKEN:
 if not CLAUDE_API_KEY:
     raise ValueError("CLAUDE_API_KEY не найден")
 
-claude = anthropic.Anthropic(
+claude = anthropic.AsyncAnthropic(
     api_key=CLAUDE_API_KEY,
     base_url=ANTHROPIC_BASE_URL
 )
@@ -127,7 +128,7 @@ def handle_intent(data: dict) -> str:
     return reply
 
 
-def get_claude_response(user_id: int, user_message: str) -> str:
+async def get_claude_response(user_id: int, user_message: str) -> str:
     """Отправить сообщение в Claude и получить ответ."""
     if user_id not in user_histories:
         user_histories[user_id] = []
@@ -135,11 +136,12 @@ def get_claude_response(user_id: int, user_message: str) -> str:
     history = user_histories[user_id]
     history.append({"role": "user", "content": user_message})
 
-    response = claude.messages.create(
+    response = await claude.messages.create(
         model="claude-haiku-4-5-20251001",
         max_tokens=256,
         system=SYSTEM_PROMPT,
-        messages=history
+        messages=history,
+        stream=False
     )
 
     raw_reply = next(
@@ -159,17 +161,24 @@ async def start(update, context):
         f"Здравствуйте, {name}! Я администратор студии бровей и ресниц «Коради». Чем могу помочь?"
     )
 
+async def keep_typing(context, chat_id):
+    """Показывать 'печатает...' каждые 4 секунды."""
+    while True:
+        await context.bot.send_chat_action(
+            chat_id=chat_id,
+            action="typing"
+        )
+        await asyncio.sleep(4)
 
 async def handle_message(update, context):
     user_id = update.effective_user.id
     user_text = update.message.text
+    chat_id = update.effective_chat.id
 
-    await context.bot.send_chat_action(
-        chat_id=update.effective_chat.id,
-        action="typing"
-    )
+    typing_task = asyncio.create_task(keep_typing(context, chat_id))
+    reply = await get_claude_response(user_id, user_text)
+    typing_task.cancel()
 
-    reply = get_claude_response(user_id, user_text)
     await update.message.reply_text(reply)
 
 
