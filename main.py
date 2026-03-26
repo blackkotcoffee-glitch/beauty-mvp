@@ -7,6 +7,21 @@ import json
 import re
 import os
 import asyncio
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    handlers=[
+        logging.FileHandler("bot.log", encoding="utf-8"),
+        logging.StreamHandler()
+    ]
+)
+
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("telegram").setLevel(logging.WARNING)
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
@@ -107,6 +122,7 @@ def parse_json_response(text: str) -> dict:
     try:
         return json.loads(text)
     except json.JSONDecodeError:
+        logger.error(f"Ошибка парсинга JSON: {text[:100]}")
         return {
             "intent": "unknown",
             "service": None,
@@ -136,6 +152,8 @@ async def get_claude_response(user_id: int, user_message: str) -> str:
     history = user_histories[user_id]
     history.append({"role": "user", "content": user_message})
 
+    logger.info(f"Пользователь {user_id}: {user_message[:50]}")
+
     response = await claude.messages.create(
         model="claude-haiku-4-5-20251001",
         max_tokens=256,
@@ -151,11 +169,13 @@ async def get_claude_response(user_id: int, user_message: str) -> str:
 
     history.append({"role": "assistant", "content": raw_reply})
 
-    data = parse_json_response(raw_reply)
+    data = parse_json_response(raw_reply) 
+    logger.info(f"Intent: {data.get('intent')}, service: {data.get('service')}") 
     return handle_intent(data)
 
 
 async def start(update, context):
+    """Обработчик команды /start."""
     name = update.effective_user.first_name
     await update.message.reply_text(
         f"Здравствуйте, {name}! Я администратор студии бровей и ресниц «Коради». Чем могу помочь?"
@@ -171,6 +191,7 @@ async def keep_typing(context, chat_id):
         await asyncio.sleep(4)
 
 async def handle_message(update, context):
+    """Обработчик входящих сообщений."""
     user_id = update.effective_user.id
     user_text = update.message.text
     chat_id = update.effective_chat.id
@@ -183,6 +204,7 @@ async def handle_message(update, context):
 
 
 def main():
+    """Запуск бота."""
     app = (
         Application.builder()
         .token(TOKEN)
@@ -192,7 +214,7 @@ def main():
     )
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    print("Бот запущен...")
+    logger.info("Бот запущен")
     app.run_polling()
 
 

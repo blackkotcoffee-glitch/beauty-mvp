@@ -1,0 +1,30 @@
+2026-03-26 20:48:23 INFO     Бот запущен
+2026-03-26 20:48:25 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getMe "HTTP/1.1 200 OK"
+2026-03-26 20:48:25 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/deleteWebhook "HTTP/1.1 200 OK"
+2026-03-26 20:48:25 INFO     Application started
+2026-03-26 20:48:35 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:48:45 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:48:55 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:49:06 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:49:16 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:49:26 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:49:36 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:49:46 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:49:56 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:50:06 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:50:16 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:50:26 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:50:36 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:50:47 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:50:57 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:51:07 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:51:17 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:51:27 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:51:37 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:51:47 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:51:57 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:52:08 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:52:13 INFO     HTTP Request: POST https://api.telegram.org/bot8755875487:AAHSJhGKEMSadlKKPbKFxmI6SpzO6RDE5qA/getUpdates "HTTP/1.1 200 OK"
+2026-03-26 20:52:13 INFO     Application is stopping. This might take a moment.
+2026-03-26 20:52:13 INFO     Application.stop() complete
+2026-03-26 20:55:38 INFO     Бот запущен
