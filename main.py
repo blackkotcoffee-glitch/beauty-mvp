@@ -203,8 +203,6 @@ def main():
     app = (
         Application.builder()
         .token(TOKEN)
-        .proxy("http://127.0.0.1:12334")
-        .get_updates_proxy("http://127.0.0.1:12334")
         .build()
     )
     app.add_handler(CommandHandler("start", start))
