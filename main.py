@@ -8,6 +8,7 @@ import re
 import os
 import asyncio
 import logging
+from database import init_db, save_message, get_history
 
 logging.basicConfig(
     level=logging.INFO,
@@ -106,9 +107,6 @@ SYSTEM_PROMPT = """
 }
 """
 
-user_histories = {}
-
-
 def parse_json_response(text: str) -> dict:
     """Безопасно парсим JSON из ответа Claude."""
     text = re.sub(r'```json\s*', '', text)
@@ -146,13 +144,10 @@ def handle_intent(data: dict) -> str:
 
 async def get_claude_response(user_id: int, user_message: str) -> str:
     """Отправить сообщение в Claude и получить ответ."""
-    if user_id not in user_histories:
-        user_histories[user_id] = []
-
-    history = user_histories[user_id]
-    history.append({"role": "user", "content": user_message})
-
+    await save_message(user_id, "user", user_message)
     logger.info(f"Пользователь {user_id}: {user_message[:50]}")
+    
+    history = await get_history(user_id)
 
     response = await claude.messages.create(
         model="claude-haiku-4-5-20251001",
@@ -167,7 +162,7 @@ async def get_claude_response(user_id: int, user_message: str) -> str:
         if block.type == "text"
     )
 
-    history.append({"role": "assistant", "content": raw_reply})
+    await save_message(user_id, "assistant", raw_reply)
 
     data = parse_json_response(raw_reply) 
     logger.info(f"Intent: {data.get('intent')}, service: {data.get('service')}") 
@@ -214,6 +209,7 @@ def main():
     )
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    asyncio.run(init_db())
     logger.info("Бот запущен")
     app.run_polling()
 

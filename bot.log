@@ -28,3 +28,9 @@
 2026-03-26 20:52:13 INFO     Application is stopping. This might take a moment.
 2026-03-26 20:52:13 INFO     Application.stop() complete
 2026-03-26 20:55:38 INFO     Бот запущен
+2026-03-29 15:45:42 INFO     БД инициализирована
+2026-03-29 15:45:42 INFO     Бот запущен
+2026-03-29 15:47:05 INFO     Пользователь 1349316967: Добрый день!
+2026-03-29 15:47:27 INFO     Intent: greeting, service: None
+2026-03-29 15:47:42 INFO     Пользователь 1349316967: Хочу записаться к Вам на брови
+2026-03-29 15:48:03 INFO     Intent: booking, service: Оформление бровей
